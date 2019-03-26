@@ -312,72 +312,71 @@ else:
 		print("{}) All extracts properly recieved and sorted".format(rank))
 
 
-		#Useless single-loop just for clearing space
-		for i in range(1):	
-			# for i in range(len(particleList)):	
+
+		# for i in range(len(particleList)):	
+			
+		# 	for j in range(i+1, len(particleList)):
 				
-			# 	for j in range(i+1, len(particleList)):
-					
-			# 		if distance(particleList[i], particleList[j]) <= radius:
+		# 		if distance(particleList[i], particleList[j]) <= radius:
 
-			# 			if particleList[i].state == 1 and particleList[j].state == 0: 
-			# 				print('Disease interaction happened')
+		# 			if particleList[i].state == 1 and particleList[j].state == 0: 
+		# 				print('Disease interaction happened')
 
-			# 				if disPass(particleList[j], rProb):
-			# 					particleList[j].state = 1
-			# 					print("I should become sick")
-								
-			# 					if particleList[j].carrier != 1:
-			# 						print("I dtagbecome sick")
-			# 						healP[j]  = None
-			# 						sick1P[j] = particleList[j]
-			# 					else:
-			# 						pass
+		# 				if disPass(particleList[j], rProb):
+		# 					particleList[j].state = 1
+		# 					print("I should become sick")
 							
-			# 				particleList[i].cTime = particleList[i].cTime + 1
-			# 				particleList[j].cTime = particleList[j].cTime + 1
+		# 					if particleList[j].carrier != 1:
+		# 						print("I dtagbecome sick")
+		# 						healP[j]  = None
+		# 						sick1P[j] = particleList[j]
+		# 					else:
+		# 						pass
 						
-			# 			elif particleList[j].state == 1 and particleList[i].state == 0:
-			# 				print("Disease interaction happened")
-
-			# 				if disPass(particleList[i], rProb):
-			# 					particleList[i].state = 1
-			# 					print("I should become sick")
-
-			# 					if particleList[i].carrier != 1:
-			# 						print("I dtagbecome sick")
-			# 						healP[i]  = None
-			# 						sick1P[i] = particleList[i]
-			# 					else:
-			# 						pass
-
-							
-			# 				particleList[j].cTime = particleList[i].cTime + 1
-			# 				particleList[i].cTime = particleList[j].cTime + 1
+		# 				particleList[i].cTime = particleList[i].cTime + 1
+		# 				particleList[j].cTime = particleList[j].cTime + 1
 					
-			# 		else:
-			# 			particleList[i].cTime = 0
-			# 			particleList[j].cTime = 0
+		# 			elif particleList[j].state == 1 and particleList[i].state == 0:
+		# 				print("Disease interaction happened")
+
+		# 				if disPass(particleList[i], rProb):
+		# 					particleList[i].state = 1
+		# 					print("I should become sick")
+
+		# 					if particleList[i].carrier != 1:
+		# 						print("I dtagbecome sick")
+		# 						healP[i]  = None
+		# 						sick1P[i] = particleList[i]
+		# 					else:
+		# 						pass
+
 						
-			# if count % devTime == 0:
-			# 	for i in range(len(particleList)):
-			# 		part = particleList[i]
-			# 		part.sicken()
+		# 				particleList[j].cTime = particleList[i].cTime + 1
+		# 				particleList[i].cTime = particleList[j].cTime + 1
+				
+		# 		else:
+		# 			particleList[i].cTime = 0
+		# 			particleList[j].cTime = 0
 					
-			# 		if part.level == 2:
-			# 			sick1P[i] = None
-			# 			sick2P[i] = part
-			# 		if part.level == 3:
-			# 			sick2P[i] = None
-			# 			sick3P[i] = part
-			# 		if part.level == 4:
-			# 			sick3P[i] = None
-			# 			sick4P[i] = part
-			# 		if part.level == 5:
-			# 			sick4P[i]             = None
-			# 			particleList[i].state = 2 
-			# 			deadP[i]              = part
-			pass
+		# if count % devTime == 0:
+		# 	for i in range(len(particleList)):
+		# 		part = particleList[i]
+		# 		part.sicken()
+				
+		# 		if part.level == 2:
+		# 			sick1P[i] = None
+		# 			sick2P[i] = part
+		# 		if part.level == 3:
+		# 			sick2P[i] = None
+		# 			sick3P[i] = part
+		# 		if part.level == 4:
+		# 			sick3P[i] = None
+		# 			sick4P[i] = part
+		# 		if part.level == 5:
+		# 			sick4P[i]             = None
+		# 			particleList[i].state = 2 
+		# 			deadP[i]              = part
+		pass
 
 		xH, yH = coordExstract(healP)
 		x1, y1 = coordExstract(sick1P)
