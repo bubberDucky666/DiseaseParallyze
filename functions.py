@@ -27,11 +27,9 @@ class Particle():
 		self.sNode	  = 0		 # The node the particle starts in
 
 	def sicken(self):
-		if self.state == 1:		 #Further sickens (or kills) organism			
-			if self.level <= 5:
-				self.level = self.level + 1
-			elif self.level > 6:
-				self.state = 3
+		if self.state in [1,2,3,4]:		 #Further sickens (or kills) organism			
+				self.state += 1
+
 	
 	#Checks which node particle SHOULD be in. Returns rank of node. 
 	#INPUT: bounds in nodeBounds looks like [[minX, maxX], [minY, maxY]]
@@ -70,13 +68,13 @@ def pListMake(numParticles):				#Creates the particle list and initializes the p
 
 	return particleList
 
-def move(particleList, mag):
+def move(particleList, mag, nSide):
 	pi    = np.pi
 	
 	for i in range(len(particleList)):
 		if type(particleList[i]) == type(None):
 			pass
-		elif particleList[i].state != 2:
+		elif particleList[i].state != 5:
 
 			den = 0
 			while den == 0:
@@ -91,7 +89,7 @@ def move(particleList, mag):
 	
 	return particleList
 	
-def distance(p1, p2):	
+def distance(p1, p2, nSide):	
 	dr = p1.r - p2.r 
 
 	dx = dr[0]
@@ -105,7 +103,7 @@ def distance(p1, p2):
 def disPass(p1, rProb):
 	a = np.random.random_sample() + (p1.cTime/10)
 	print("a is {}".format(a))
-	if rProb >= a:
+	if rProb >= a and p1.carrier == 0:
 		print('Dis')
 		return True
 	else:
