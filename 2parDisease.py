@@ -2,13 +2,13 @@
 # SOME PARTICLES ARE STILL SLIPPING THROUGH
 # MAKE SURE MPI WHEREAMI CHECKS PBC CONDITIONS
 
+import random
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib import animation 
-import random
 from mpi4py     import MPI
 from functions  import *
-
+from params		import *
 
 # - - - - - - - - - - - - - GLOBAL - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -63,6 +63,7 @@ if rank == 0:
 
 	for frame in range(duration):
 		comm.Barrier()
+
 	print("Done")
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -216,26 +217,26 @@ else:
 		yB = nodeMatrix[rank-1].yBound
 		
 		if rank == 3 or rank == 4: # just for debugging
-		plt.title("Node {}; xB {} yB {}".format(rank, xB, yB))
+			plt.title("Node {}; xB {} yB {}".format(rank, xB, yB))
 
-		plt.xlim(0, nSide)
-		plt.ylim(0, nSide)
-		
-		plt.scatter(x1, y1, c='#ADE500')
-		plt.scatter(xH, yH, c='#00E500')
-		plt.scatter(x2, y2, c='#E5DF00')
-		plt.scatter(x3, y3, c='#E5B700')
-		plt.scatter(x4, y4, c='#E55D00')
-		plt.scatter(xD, yD, c='#E50018')
+			plt.xlim(0, nSide)
+			plt.ylim(0, nSide)
+			
+			plt.scatter(x1, y1, c='#ADE500')
+			plt.scatter(xH, yH, c='#00E500')
+			plt.scatter(x2, y2, c='#E5DF00')
+			plt.scatter(x3, y3, c='#E5B700')
+			plt.scatter(x4, y4, c='#E55D00')
+			plt.scatter(xD, yD, c='#E50018')
 
-		#Draw outline of domain
-		plt.plot([ xB[0], xB[0] ],[ yB[1], yB[0] ])
-		plt.plot([ xB[1], xB[1] ],[ yB[1], yB[0] ])
-		plt.plot([ xB[0], xB[1] ],[ yB[0], yB[0] ])
-		plt.plot([ xB[0], xB[1] ],[ yB[1], yB[1] ])
-		
-		plt.draw()
-		plt.pause(pause)
-		plt.clf()
+			#Draw outline of domain
+			plt.plot([ xB[0], xB[0] ],[ yB[1], yB[0] ])
+			plt.plot([ xB[1], xB[1] ],[ yB[1], yB[0] ])
+			plt.plot([ xB[0], xB[1] ],[ yB[0], yB[0] ])
+			plt.plot([ xB[0], xB[1] ],[ yB[1], yB[1] ])
+			
+			plt.draw()
+			plt.pause(pause)
+			plt.clf()
 
 

@@ -1,3 +1,4 @@
+from mpi4py import MPI
 
 # - - - - - - - - - - - - - User Defined Constants - - - - - - - - - - - - - - - - - - - - - - - - -
 

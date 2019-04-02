@@ -102,7 +102,7 @@ pause         = .0000000001
 
 #Disease parameters
 rProb 	 = 1      
-  # 0 is the lowest unit, 1 is the highest unit
+# 0 is the lowest unit, 1 is the highest unit
 devTime  = 60		 # num of frames for disease to worsend in level
 
 #Lists
