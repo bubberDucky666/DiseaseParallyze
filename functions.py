@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import math
 
 
 # Factors
@@ -128,3 +129,21 @@ def unextract(spEx, *args):
 				except:
 					print("THE TUPLE IS {}".format(args))
 		return True
+
+def sNodeGet(rank, numNodes): 
+	n0 = ((rank-numNodes)%numNodes) - 1
+	n1 = ((rank-numNodes)%numNodes)
+	n2 = ((rank-numNodes)%numNodes) + 1
+	n3 = (rank-1)%numNodes + (numNodes * math.floor(8/numNodes))
+	n4 = (rank+1)%numNodes + (numNodes * math.floor(8/numNodes))
+	n5 = ((rank+numNodes)%numNodes) - 1
+	n6 = ((rank+numNodes)%numNodes)
+	n7 = ((rank+numNodes)%numNodes) + 1 
+
+	# ________________
+	# | n5 | n6  | n7 |
+	# |____|_____|____|
+	# | n3 |	 | n4 |
+	# |____|_____|____|
+	# | n0 | n1  | n2 |
+	# |____|_____|____|
