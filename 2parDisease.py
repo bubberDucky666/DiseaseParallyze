@@ -40,7 +40,7 @@ for i in range(numNodes**2):
 if rank == 0:
 
 	#The position of the sickBois in particleList
-	sickBois = [0]
+	sickBois = [0, numParticles-1, 3]
 
 	particleList = pListMake(numParticles)
 	layout(particleList, nSide)
@@ -104,28 +104,32 @@ else:
 #=======================================================================
 		move(particleList, mag, nSide)	
 		for i in range(len(particleList)):	
+			
 			for j in range(i+1, len(particleList)):
+				
 				if distance(particleList[i], particleList[j], nSide) <= radius:
 					
-					if particleList[i].state == 1 and particleList[j].state == 0: 
+					if particleList[i].state != 0 and particleList[j].state == 0: 
 						print('Disease interaction happened')
 
 						if disPass(particleList[j], rProb):
 							particleList[j].state = 1
 							print("I should become sick")
 						else:
+							print("no sickness transmitted")
 							pass
 						
 						particleList[i].cTime = particleList[i].cTime + 1
 						particleList[j].cTime = particleList[j].cTime + 1
 					
-					elif particleList[j].state == 1 and particleList[i].state == 0:
+					elif particleList[j].state != 0 and particleList[i].state == 0:
 						print("Disease interaction happened")
 
 						if disPass(particleList[i], rProb):
 							particleList[i].state = 1
 							print("I should become sick")
 						else:
+							print("no sickness transmitted")
 							pass
 	
 						particleList[j].cTime = particleList[i].cTime + 1
@@ -216,27 +220,27 @@ else:
 		xB = nodeMatrix[rank-1].xBound
 		yB = nodeMatrix[rank-1].yBound
 		
-		if rank == 3 or rank == 4: # just for debugging
-			plt.title("Node {}; xB {} yB {}".format(rank, xB, yB))
+		#if rank == 3 or rank == 4: # just for debugging
+		plt.title("Node {}; xB {} yB {}".format(rank, xB, yB))
 
-			plt.xlim(0, nSide)
-			plt.ylim(0, nSide)
-			
-			plt.scatter(x1, y1, c='#ADE500')
-			plt.scatter(xH, yH, c='#00E500')
-			plt.scatter(x2, y2, c='#E5DF00')
-			plt.scatter(x3, y3, c='#E5B700')
-			plt.scatter(x4, y4, c='#E55D00')
-			plt.scatter(xD, yD, c='#E50018')
+		plt.xlim(0, nSide)
+		plt.ylim(0, nSide)
+		
+		plt.scatter(x1, y1, c='#ADE500')
+		plt.scatter(xH, yH, c='#00E500')
+		plt.scatter(x2, y2, c='#E5DF00')
+		plt.scatter(x3, y3, c='#E5B700')
+		plt.scatter(x4, y4, c='#E55D00')
+		plt.scatter(xD, yD, c='#E50018')
 
-			#Draw outline of domain
-			plt.plot([ xB[0], xB[0] ],[ yB[1], yB[0] ])
-			plt.plot([ xB[1], xB[1] ],[ yB[1], yB[0] ])
-			plt.plot([ xB[0], xB[1] ],[ yB[0], yB[0] ])
-			plt.plot([ xB[0], xB[1] ],[ yB[1], yB[1] ])
-			
-			plt.draw()
-			plt.pause(pause)
-			plt.clf()
+		#Draw outline of domain
+		plt.plot([ xB[0], xB[0] ],[ yB[1], yB[0] ])
+		plt.plot([ xB[1], xB[1] ],[ yB[1], yB[0] ])
+		plt.plot([ xB[0], xB[1] ],[ yB[0], yB[0] ])
+		plt.plot([ xB[0], xB[1] ],[ yB[1], yB[1] ])
+		
+		plt.draw()
+		plt.pause(pause)
+		plt.clf()
 
 
