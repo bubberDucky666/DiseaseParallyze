@@ -140,6 +140,7 @@ def sNodeGet(rank, numNodes):
 	n6 = ((rank+numNodes)%numNodes)
 	n7 = ((rank+numNodes)%numNodes) + 1 
 
+	return [n0,n1,n2,n3,n4,n5,n6,n7]
 	# ________________
 	# | n5 | n6  | n7 |
 	# |____|_____|____|
