@@ -1,7 +1,7 @@
 import numpy as np
 import random
 import math
-
+from mpi4py import MPI
 
 # Factors
 # 1) Contact time
@@ -130,6 +130,7 @@ def unextract(spEx, *args):
 					print("THE TUPLE IS {}".format(args))
 		return True
 
+#Get surrounding nodes
 def sNodeGet(rank, numNodes): 
 	n0 = ((rank-numNodes)%numNodes) - 1
 	n1 = ((rank-numNodes)%numNodes)
@@ -148,3 +149,46 @@ def sNodeGet(rank, numNodes):
 	# |____|_____|____|
 	# | n0 | n1  | n2 |
 	# |____|_____|____|
+
+		
+#makes outer particle list
+def oPartGet(particleList, xBound, yBound, radius):
+	oPartList = [[] for i in range(len(8))]
+	for p in particleList:
+		corner = [0, 0]      #if corner[0] is 1, p is on the left   - - if corner[0] is 2, p is on the right
+							 #if corner[1] is 1, p is on the bottom - - if corner[1] is 2, p is on the top
+		r 	   = p.r
+
+		#Checking x values
+		if r[0] < xBound[0] + radius:
+			oPartList[3].append(p)
+			corner[0] = 1
+		elif r[0] > xBound[1] - radius:
+			oPartList[4].append(p)
+			corner[0] = 2
+		
+		#Checking y values
+		if r[1] < yBound[0] + radius:
+			oPartList[1].append(p)
+			corner[1] = 1
+		elif r[1] > yBound[1] - radius:
+			oPartList[6].append(p)
+			corner[1] = 2
+
+		#Checking the corners
+		if corner == [1, 1]:
+			oPartList[0].append(p)
+		elif corner == [1, 2]:
+			oPartList[5].append(p)
+		elif corner == [2, 1]:
+			oPartList[2].append(p)
+		elif corner == [2, 2]:
+			oPartList[7].append(p)
+
+	return oPartList
+
+		
+
+		
+		
+
