@@ -1,6 +1,6 @@
 
-# SOME PARTICLES ARE STILL SLIPPING THROUGH
-# MAKE SURE MPI WHEREAMI CHECKS PBC CONDITIONS
+# After move, nodes check other node's particle positions within a bound
+# of 'radius' length. PARTICLE IN NODE CANNOT INFECT PARTICLE OUT OF NODE
 
 import random
 import numpy as np
@@ -64,6 +64,8 @@ if rank == 0:
 	for frame in range(duration):
 		comm.Barrier()
 
+		comm.Barrier()
+
 	print("Done")
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -103,6 +105,28 @@ else:
 
 #=======================================================================
 		move(particleList, mag, nSide)	
+
+		comm.Barrier()
+
+		sNodes		  = sNodeGet(rank, numNodes)
+	
+		# Creates a list of edge particles for various nodes
+		# [0, 1, 2, 3, 4, 5, 6, 7]
+		ePartList = oPartGet(particleList, Node.xBound, Node.yBound, radius)
+
+		# Empty list to be filled with outer-node edge particles
+		oPartList = [[] for i in range(len(8))]
+
+		#Sends out edge particles to other Nodes
+		for n in sNodes:
+			comm.send(ePartList[n], source=n, tag="eP")
+
+		#Recieves edge particles from other nodes 
+		for n in sNodes:
+			nParts = comm.recv(source=n, tag="eP")
+			oPartList.append(nParts)
+		
+		#Does particle disease checks on local and outernode particles
 		for i in range(len(particleList)):	
 			
 			for j in range(i+1, len(particleList)):
