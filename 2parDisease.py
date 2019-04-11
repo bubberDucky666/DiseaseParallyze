@@ -12,6 +12,9 @@ from params		import *
 
 # - - - - - - - - - - - - - GLOBAL - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+
 #Creates an node matrix, making it easier for me to do stuff.
 nodeMatrix = [0 for i in range(numNodes**2)]
 
@@ -108,24 +111,26 @@ else:
 
 		comm.Barrier()
 
-		sNodes		  = sNodeGet(rank, numNodes)
+		sNodes	 = sNodeGet(rank, numNodes)
 	
 		# Creates a list of edge particles for various nodes
-		# [0, 1, 2, 3, 4, 5, 6, 7]
+		# [[0], [1], [2], [3], [4], [5], [6], [7], ...]
 		ePartList = oPartGet(particleList, Node.xBound, Node.yBound, radius)
 
 		# Empty list to be filled with outer-node edge particles
-		oPartList = [[] for i in range(len(8))]
+		oPartList = [[] for i in range(8)]
 
 		#Sends out edge particles to other Nodes
-		for n in sNodes:
-			comm.send(ePartList[n], source=n, tag="eP")
+		for n in range(len(sNodes)):
+			comm.send(ePartList[n], dest=int(n), tag="eP")
 
 		#Recieves edge particles from other nodes 
 		for n in sNodes:
 			nParts = comm.recv(source=n, tag="eP")
 			oPartList.append(nParts)
 		
+		# I NEED TO DO STUFF WITH THE OPARTLISTTTTTTTT
+
 		#Does particle disease checks on local and outernode particles
 		for i in range(len(particleList)):	
 			
