@@ -132,14 +132,32 @@ def unextract(spEx, *args):
 
 #Get surrounding nodes
 def sNodeGet(rank, numNodes): 
-	n0 = ((rank-numNodes)%numNodes) - 1
-	n1 = ((rank-numNodes)%numNodes)
-	n2 = ((rank-numNodes)%numNodes) + 1
-	n3 = (rank-1)%numNodes + (numNodes * math.floor(8/numNodes))
-	n4 = (rank+1)%numNodes + (numNodes * math.floor(8/numNodes))
-	n5 = ((rank+numNodes)%numNodes) - 1
-	n6 = ((rank+numNodes)%numNodes)
-	n7 = ((rank+numNodes)%numNodes) + 1 
+	total = numNodes**2
+
+
+	if (rank+(numNodes-1)) > total: n1 = (rank + (numNodes-1))%numNodes
+	else:					        n1 = rank + (numNodes-1)
+	
+	if (rank-(numNodes-1)) < 0:     n6 = total - (numNodes) + rank
+	else:							n6 = rank - (numNodes-1)
+
+	if (rank)%numNodes ==0:         n3  = rank + (numNodes-1)
+	else: 					        n3  = rank - 1
+	
+	if (rank+1)%numNodes==0:        n4  = rank - (numNodes-1)
+	else: 					        n4  = rank + 1
+	
+	if n1%numNodes ==0:             n0  = rank + (numNodes-1)
+	else:					        n0  = rank - 1
+
+	if (n1+1)%numNodes ==0:         n2  = rank - (numNodes-1)
+	else:					        n2  = rank + 1
+
+	if n6%numNodes ==0:             n5  = rank + (numNodes-1)
+	else:					        n5  = rank -1
+	
+	if (n6+1)%numNodes ==0:         n7  = rank - (numNodes-1)
+	else:					        n7  = rank + 1
 
 	return [n0,n1,n2,n3,n4,n5,n6,n7]
 	# ________________
@@ -153,7 +171,7 @@ def sNodeGet(rank, numNodes):
 		
 #makes outer particle list
 def oPartGet(particleList, xBound, yBound, radius):
-	oPartList = [[] for i in range(len(8))]
+	oPartList = [[] for i in range(8)]
 	for p in particleList:
 		corner = [0, 0]      #if corner[0] is 1, p is on the left   - - if corner[0] is 2, p is on the right
 							 #if corner[1] is 1, p is on the bottom - - if corner[1] is 2, p is on the top
