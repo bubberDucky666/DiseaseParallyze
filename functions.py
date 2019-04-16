@@ -123,23 +123,24 @@ def unextract(spEx, *args):
 	if type(spEx) != type(None):
 	
 		for i in range(len(spEx)):
-				try:
-					#add correct value to correct list
-					args[i].append(spEx[i])
-				except:
-					print("THE TUPLE IS {}".format(args))
+			try:
+				#add correct value to correct list
+				args[i].append(spEx[i])
+			except:
+				print("THE TUPLE IS {}".format(args))
 		return True
 
 #Get surrounding nodes
 def sNodeGet(rank, numNodes): 
+
 	total = numNodes**2
+	rank = rank -1
 
-
-	if (rank+(numNodes-1)) > total: n1 = (rank + (numNodes-1))%numNodes
-	else:					        n1 = rank + (numNodes-1)
+	if (rank+ numNodes) >= total:   n1 = (rank + (numNodes))%numNodes
+	else:					        n1 = rank + (numNodes)
 	
-	if (rank-(numNodes-1)) < 0:     n6 = total - (numNodes) + rank
-	else:							n6 = rank - (numNodes-1)
+	if (rank- numNodes) < 0:        n6 = total - (numNodes) + rank
+	else:							n6 = rank - (numNodes)
 
 	if (rank)%numNodes ==0:         n3  = rank + (numNodes-1)
 	else: 					        n3  = rank - 1
@@ -154,12 +155,14 @@ def sNodeGet(rank, numNodes):
 	else:					        n2  = rank + 1
 
 	if n6%numNodes ==0:             n5  = rank + (numNodes-1)
-	else:					        n5  = rank -1
+	else:					        n5  = rank - 1
 	
 	if (n6+1)%numNodes ==0:         n7  = rank - (numNodes-1)
-	else:					        n7  = rank + 1
+	else:					        n7  = rank +1
 
+	print("{}) {}".format(rank+1, [n0,n1,n2,n3,n4,n5,n6,n7]))
 	return [n0,n1,n2,n3,n4,n5,n6,n7]
+
 	# ________________
 	# | n5 | n6  | n7 |
 	# |____|_____|____|

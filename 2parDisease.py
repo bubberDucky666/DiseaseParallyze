@@ -112,9 +112,10 @@ else:
 		comm.Barrier()
 
 		sNodes	 = sNodeGet(rank, numNodes)
+		print("sNodes length {} \n\n\n".format(len(sNodes)))
 	
 		# Creates a list of edge particles for various nodes
-		# [[0], [1], [2], [3], [4], [5], [6], [7], ...]
+		# [[n0], [n1], [n2], [n3], [n4], [5n], [n6], [n7], ...]
 		ePartList = oPartGet(particleList, Node.xBound, Node.yBound, radius)
 
 		# Empty list to be filled with outer-node edge particles
@@ -122,14 +123,15 @@ else:
 
 		#Sends out edge particles to other Nodes
 		for n in range(len(sNodes)):
-			comm.send(ePartList[n], dest=int(n), tag="eP")
+			print("{} Sending edges to {}".format(rank, sNodes[n]))
+			comm.send(ePartList[n], dest=sNodes[n])
+		print("{}) Done sending edge bois to edge nodes\n\n\n".format(rank))
 
-		#Recieves edge particles from other nodes 
+		#Recieves edge partlices from other nodes 
 		for n in sNodes:
-			nParts = comm.recv(source=n, tag="eP")
+			nParts = comm.recv(source=n, tag=n)
 			oPartList.append(nParts)
 		
-		# I NEED TO DO STUFF WITH THE OPARTLISTTTTTTTT
 
 		#Does particle disease checks on local and outernode particles
 		for i in range(len(particleList)):	
