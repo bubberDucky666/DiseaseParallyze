@@ -3,7 +3,7 @@
 # of 'radius' length. PARTICLE IN NODE CANNOT INFECT PARTICLE OUT OF NODE
 
 import random
-import numpy as np
+import math as math
 from matplotlib import pyplot as plt
 from matplotlib import animation 
 from mpi4py     import MPI
@@ -16,27 +16,32 @@ comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 
 #Creates an node matrix, making it easier for me to do stuff.
-nodeMatrix = [0 for i in range(numNodes**2)]
+nodeMatrix = [ [0 for i in range(numNodes)] for j in range(numNodes)]
 
+#rank to be assigned to created nodes
+mRank = 0
 
-for i in range(numNodes**2): 
+for i in range(numNodes): 
+	for j in range(numNodes):
 
-	#Define row position values
-	row  = int(np.floor(i/numNodes))
-	col  = i % numNodes
+		mRank += 1
 
-	xMin = col/numNodes     * nSide
-	xMax = (1+col)/numNodes	* nSide
+		#Define row position values
+		row  = i
+		col  = j
 
-	yMin = row/numNodes     * nSide
-	yMax = (1+row)/numNodes * nSide
+		xMin = col/numNodes     * nSide
+		xMax = (1+col)/numNodes	* nSide
 
-	#Initialize node (NodeRep object)
-	nodeMatrix[i] 		 = NodeRep(i+1, numNodes, numParticles, ([row, col]))
-	
-	#Set node bounds
-	nodeMatrix[i].xBound = [xMin, xMax]
-	nodeMatrix[i].yBound = [yMin, yMax]
+		yMin = row/numNodes     * nSide
+		yMax = (1+row)/numNodes * nSide
+
+		#Initialize node (NodeRep object)
+		nodeMatrix[i][j] 		= NodeRep(mRank, numNodes, numParticles, ([row, col]))
+		
+		#Set node bounds
+		nodeMatrix[i][j].xBound = [xMin, xMax]
+		nodeMatrix[i][j].yBound = [yMin, yMax]
 
 
 # - - - - - - - - - - - - - MOTHER - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -109,8 +114,6 @@ else:
 #=======================================================================
 		move(particleList, mag, nSide)	
 
-		comm.Barrier()
-
 		sNodes	 = sNodeGet(rank, numNodes)
 		print("sNodes length {} \n\n\n".format(len(sNodes)))
 	
@@ -127,9 +130,12 @@ else:
 			comm.send(ePartList[n], dest=sNodes[n])
 		print("{}) Done sending edge bois to edge nodes\n\n\n".format(rank))
 
+		comm.Barrier()
+	
 		#Recieves edge partlices from other nodes 
 		for n in sNodes:
-			nParts = comm.recv(source=n, tag=n)
+			nParts = comm.recv(source=n)
+			print("{}) Recieved edges from {}".format(rank, n))
 			oPartList.append(nParts)
 		
 
