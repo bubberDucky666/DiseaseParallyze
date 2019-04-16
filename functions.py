@@ -34,15 +34,18 @@ class Particle():
 	
 	#Checks which node particle SHOULD be in. Returns rank of node. 
 	#INPUT: bounds in nodeBounds looks like [[minX, maxX], [minY, maxY]]
-	def whereAmI(self, nodeMatrix, nSide):	
-		pos = self.r 
-		for indx, node in enumerate(nodeMatrix):
-			xBound = node.xBound
-			yBound = node.yBound
+	def whereAmI(self, nodeMatrix, nSide, numNodes):	
+		pos    = self.r 
 
-			if pos[0] >= xBound[0] and pos[1] >= yBound[0]:
-				if pos[0] < xBound[1] and pos[1] < yBound[1]:
-					return indx + 1
+		for i in range(numNodes):
+			for j in range(numNodes):
+				
+				xBound = nodeMatrix[i][j].xBound
+				yBound = nodeMatrix[i][j].yBound
+
+				if pos[0] >= xBound[0] and pos[1] >= yBound[0]:
+					if pos[0] < xBound[1] and pos[1] < yBound[1]:
+						return [i, j]
 		
 
 def layout(particleList, nSide):			#Lays out the particles from the particleList
@@ -131,36 +134,43 @@ def unextract(spEx, *args):
 		return True
 
 #Get surrounding nodes
-def sNodeGet(rank, numNodes): 
+def sNodeGet(pos, numNodes, nodeMatrix): 
 
-	total = numNodes**2
-	rank = rank -1
+	row = pos[0]
+	col = pos[1]
 
-	if (rank+ numNodes) >= total:   n1 = (rank + (numNodes))%numNodes
-	else:					        n1 = rank + (numNodes)
+	n0R = (row+1)%numNodes
+	n0C	= (row-1)%numNodes
+	n0 = nodeMatrix[n0R][n0C].tag
+
+	n1R = (row+1)%numNodes
+	n1C = col
+	n1 = nodeMatrix[n1R][n1C].tag
+
+	n2R = (row+1)%numNodes
+	n2C = (col+1)%numNodes
+	n2 = nodeMatrix[n2R][n2C].tag
+
+	n3R = row
+	n3C = (col-1)%numNodes
+	n3 = nodeMatrix[n3R][n3C].tag
+
+	n4R = row
+	n4C = (col+1)%numNodes
+	n4 = nodeMatrix[n4R][n4C].tag
 	
-	if (rank- numNodes) < 0:        n6 = total - (numNodes) + rank
-	else:							n6 = rank - (numNodes)
+	n5R = (row-1)%numNodes
+	n5C = (col-1)%numNodes
+	n5 = nodeMatrix[n5R][n5C].tag
 
-	if (rank)%numNodes ==0:         n3  = rank + (numNodes-1)
-	else: 					        n3  = rank - 1
-	
-	if (rank+1)%numNodes==0:        n4  = rank - (numNodes-1)
-	else: 					        n4  = rank + 1
-	
-	if n1%numNodes ==0:             n0  = rank + (numNodes-1)
-	else:					        n0  = rank - 1
+	n6R = (row-1)%numNodes
+	n6C = col
+	n6 = nodeMatrix[n6R][n6C].tag
 
-	if (n1+1)%numNodes ==0:         n2  = rank - (numNodes-1)
-	else:					        n2  = rank + 1
+	n7R = (row-1)%numNodes
+	n7C = (col+1)%numNodes
+	n7 = nodeMatrix[n7R][n7C].tag
 
-	if n6%numNodes ==0:             n5  = rank + (numNodes-1)
-	else:					        n5  = rank - 1
-	
-	if (n6+1)%numNodes ==0:         n7  = rank - (numNodes-1)
-	else:					        n7  = rank +1
-
-	print("{}) {}".format(rank+1, [n0,n1,n2,n3,n4,n5,n6,n7]))
 	return [n0,n1,n2,n3,n4,n5,n6,n7]
 
 	# ________________

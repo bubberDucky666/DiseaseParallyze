@@ -55,19 +55,20 @@ if rank == 0:
 
 
 	for indx, p in enumerate(particleList):
-		p.sNode = p.whereAmI(nodeMatrix, nSide)
+		p.sNode = p.whereAmI(nodeMatrix, nSide, numNodes)
 
 		#Indice is rank - 1
-		nodeMatrix[(p.sNode - 1)].sPList.append(p)
+		nodeMatrix[p.sNode[0]][p.sNode[1]].sPList.append(p)
 		
 		if indx in sickBois:
 			p.state = 1
 
 
-	for i in range(numNodes**2):
-		#row  = int(np.floor(i/numNodes))
-		#col  = int(i % numNodes)
-		comm.send(nodeMatrix[i], dest = i+1, tag = i+1)
+	for i in range(numNodes):
+		for j in range(numNodes):
+			node = nodeMatrix[i][j]
+			tag  = node.tag
+			comm.send(node, dest = tag, tag = tag)
 
 	for frame in range(duration):
 		comm.Barrier()
@@ -98,6 +99,7 @@ else:
 			
 
 		particleList = Node.sPList
+		pos 		 = Node.pos
 		
 		healP		 = []
 		sick1P		 = []
@@ -111,11 +113,11 @@ else:
 		count = count + 1
 
 
-#=======================================================================
+		#=======================================================================
 		move(particleList, mag, nSide)	
 
-		sNodes	 = sNodeGet(rank, numNodes)
-		print("sNodes length {} \n\n\n".format(len(sNodes)))
+		sNodes	 = sNodeGet(pos, numNodes, nodeMatrix)
+		print("{}) sNodes: {}".format(rank, sNodes))
 	
 		# Creates a list of edge particles for various nodes
 		# [[n0], [n1], [n2], [n3], [n4], [5n], [n6], [n7], ...]
@@ -192,8 +194,9 @@ else:
 		
 		#Checks if each particle needs transfer
 		for indx, p in enumerate(particleList):
-			newId = p.whereAmI(nodeMatrix, nSide) #the tag of the node destination
-		
+			loc = p.whereAmI(nodeMatrix, nSide, numNodes) #the tag of the node destination
+			newId	 = nodeMatrix[loc[0]][loc[1]].tag
+
 			if newId != rank: #if the node p SHOULD be in is different from its current node
 				print("{}) I should be in node {}".format(rank, newId))
 				
@@ -254,8 +257,8 @@ else:
 		xD, yD = coordExstract(deadP)
 
 		#--------------------------------------------------------------
-		xB = nodeMatrix[rank-1].xBound
-		yB = nodeMatrix[rank-1].yBound
+		xB = nodeMatrix[pos[0]][pos[1]].xBound
+		yB = nodeMatrix[pos[0]][pos[1]].yBound
 		
 		#if rank == 3 or rank == 4: # just for debugging
 		plt.title("Node {}; xB {} yB {}".format(rank, xB, yB))
