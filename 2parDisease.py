@@ -73,8 +73,6 @@ if rank == 0:
 	for frame in range(duration):
 		comm.Barrier()
 
-		comm.Barrier()
-
 	print("Done")
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -82,7 +80,7 @@ if rank == 0:
 
 # RECIEVE SICKBOI AND PARTICLE LIST FROM THE MOTHER
 # MINS AND MAX VALUES NEED TO BE
-else:    							
+else:
 
 	Node = comm.recv(source=0, tag=rank)    #recieve initial information from node object
 
@@ -90,6 +88,9 @@ else:
 
 	for frame in range(duration):
 		
+		print("\n\n\n\n {}) POOPBUTT \n\n\n".format(rank))
+
+
 		#print("pulling recieved data from other nodes")
 		#for node in range(numNodes**2):
 		#	try:
@@ -114,6 +115,8 @@ else:
 
 
 		#=======================================================================
+		#			Movement and Status Changes (w/ Edge Particles)
+
 		move(particleList, mag, nSide)	
 
 		sNodes	 = sNodeGet(pos, numNodes, nodeMatrix)
@@ -121,25 +124,22 @@ else:
 	
 		# Creates a list of edge particles for various nodes
 		# [[n0], [n1], [n2], [n3], [n4], [5n], [n6], [n7], ...]
-		ePartList = oPartGet(particleList, Node.xBound, Node.yBound, radius)
+		ePartList = ePartGet(particleList, Node.xBound, Node.yBound, radius)
 
 		# Empty list to be filled with outer-node edge particles
 		oPartList = [[] for i in range(8)]
 
 		#Sends out edge particles to other Nodes
 		for n in range(len(sNodes)):
-			print("{} Sending edges to {}".format(rank, sNodes[n]))
 			comm.send(ePartList[n], dest=sNodes[n])
-		print("{}) Done sending edge bois to edge nodes\n\n\n".format(rank))
-
-		comm.Barrier()
-	
+		print("{}) Done sending edge bois to edge nodes".format(rank))
+			
 		#Recieves edge partlices from other nodes 
 		for n in sNodes:
 			nParts = comm.recv(source=n)
-			print("{}) Recieved edges from {}".format(rank, n))
 			oPartList.append(nParts)
-		
+
+		#comm.Barrier()
 
 		#Does particle disease checks on local and outernode particles
 		for i in range(len(particleList)):	
@@ -177,15 +177,14 @@ else:
 				else:
 					particleList[i].cTime = 0
 					particleList[j].cTime = 0
-					
+		
 		if count % devTime == 0:
 			for i in range(len(particleList)):
 				part = particleList[i]
 				part.sicken()
-			
-#========================================================================
 		
-		
+		#========================================================================
+		#				Moving Main Particles Between Nodes
 		
 		#different sublists for different node destinations
 		#if no particles need to be added to a sublist, add None
@@ -198,7 +197,6 @@ else:
 			newId	 = nodeMatrix[loc[0]][loc[1]].tag
 
 			if newId != rank: #if the node p SHOULD be in is different from its current node
-				print("{}) I should be in node {}".format(rank, newId))
 				
 				#puts particle in proper sublist for desination (slist indice is node rank - 1)
 				extracts[newId-1].append(p)
@@ -216,22 +214,22 @@ else:
 			print("{}) sending to {}".format(rank, dest))	
 			comm.send(extracts[i], dest=dest, tag=rank) 
 		
-		print("{}) Extracts sent out".format(rank))
-
 		#Wait for other nodes to finish
 		print("{})****Waiting****\n".format(rank))
-		comm.Barrier()
-				
+
+		print("\n\n\n\n {}) PeePeeBUTT \n\n\n".format(rank))
+
 		#Recieves particle data from each node
 		for r in range(numNodes**2):
 			extracts = comm.recv(source=(r+1), tag=(r+1))
-			print('cow')
-		
+			print("\n\n\n\n {}) PooPooButt \n\n\n".format(rank))
+
 			#Takes particle from recieved extracts list and adds it to particleList
 			for i in range(len(extracts)):
 				p = extracts[i]
 				particleList.append(p)
-				
+
+		comm.Barrier()
 		
 		#Sets particle state lists for graphing 
 		particleList = Node.sPList
@@ -247,40 +245,38 @@ else:
 		
 		print("{}) All extracts properly recieved and sorted".format(rank))
 
-		pass
+		# xH, yH = coordExstract(healP)
+		# x1, y1 = coordExstract(sick1P)
+		# x2, y2 = coordExstract(sick2P)
+		# x3, y3 = coordExstract(sick3P)
+		# x4, y4 = coordExstract(sick4P)
+		# xD, yD = coordExstract(deadP)
 
-		xH, yH = coordExstract(healP)
-		x1, y1 = coordExstract(sick1P)
-		x2, y2 = coordExstract(sick2P)
-		x3, y3 = coordExstract(sick3P)
-		x4, y4 = coordExstract(sick4P)
-		xD, yD = coordExstract(deadP)
-
-		#--------------------------------------------------------------
-		xB = nodeMatrix[pos[0]][pos[1]].xBound
-		yB = nodeMatrix[pos[0]][pos[1]].yBound
+		# #--------------------------------------------------------------
+		# xB = nodeMatrix[pos[0]][pos[1]].xBound
+		# yB = nodeMatrix[pos[0]][pos[1]].yBound
 		
-		#if rank == 3 or rank == 4: # just for debugging
-		plt.title("Node {}; xB {} yB {}".format(rank, xB, yB))
+		# #if rank == 3 or rank == 4: # just for debugging
+		# plt.title("Node {}; xB {} yB {}".format(rank, xB, yB))
 
-		plt.xlim(0, nSide)
-		plt.ylim(0, nSide)
+		# plt.xlim(0, nSide)
+		# plt.ylim(0, nSide)
 		
-		plt.scatter(x1, y1, c='#ADE500')
-		plt.scatter(xH, yH, c='#00E500')
-		plt.scatter(x2, y2, c='#E5DF00')
-		plt.scatter(x3, y3, c='#E5B700')
-		plt.scatter(x4, y4, c='#E55D00')
-		plt.scatter(xD, yD, c='#E50018')
+		# plt.scatter(x1, y1, c='#ADE500')
+		# plt.scatter(xH, yH, c='#00E500')
+		# plt.scatter(x2, y2, c='#E5DF00')
+		# plt.scatter(x3, y3, c='#E5B700')
+		# plt.scatter(x4, y4, c='#E55D00')
+		# plt.scatter(xD, yD, c='#E50018')
 
-		#Draw outline of domain
-		plt.plot([ xB[0], xB[0] ],[ yB[1], yB[0] ])
-		plt.plot([ xB[1], xB[1] ],[ yB[1], yB[0] ])
-		plt.plot([ xB[0], xB[1] ],[ yB[0], yB[0] ])
-		plt.plot([ xB[0], xB[1] ],[ yB[1], yB[1] ])
+		# #Draw outline of domain
+		# plt.plot([ xB[0], xB[0] ],[ yB[1], yB[0] ])
+		# plt.plot([ xB[1], xB[1] ],[ yB[1], yB[0] ])
+		# plt.plot([ xB[0], xB[1] ],[ yB[0], yB[0] ])
+		# plt.plot([ xB[0], xB[1] ],[ yB[1], yB[1] ])
 		
-		plt.draw()
-		plt.pause(pause)
-		plt.clf()
+		# plt.draw()
+		# plt.pause(pause)
+		# plt.clf()
 
 

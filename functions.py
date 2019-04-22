@@ -183,8 +183,8 @@ def sNodeGet(pos, numNodes, nodeMatrix):
 
 		
 #makes outer particle list
-def oPartGet(particleList, xBound, yBound, radius):
-	oPartList = [[] for i in range(8)]
+def ePartGet(particleList, xBound, yBound, radius):
+	ePartList = [[] for i in range(8)]
 	for p in particleList:
 		corner = [0, 0]      #if corner[0] is 1, p is on the left   - - if corner[0] is 2, p is on the right
 							 #if corner[1] is 1, p is on the bottom - - if corner[1] is 2, p is on the top
@@ -192,31 +192,31 @@ def oPartGet(particleList, xBound, yBound, radius):
 
 		#Checking x values
 		if r[0] < xBound[0] + radius:
-			oPartList[3].append(p)
+			ePartList[3].append(p)
 			corner[0] = 1
 		elif r[0] > xBound[1] - radius:
-			oPartList[4].append(p)
+			ePartList[4].append(p)
 			corner[0] = 2
 		
 		#Checking y values
 		if r[1] < yBound[0] + radius:
-			oPartList[1].append(p)
+			ePartList[1].append(p)
 			corner[1] = 1
 		elif r[1] > yBound[1] - radius:
-			oPartList[6].append(p)
+			ePartList[6].append(p)
 			corner[1] = 2
 
 		#Checking the corners
 		if corner == [1, 1]:
-			oPartList[0].append(p)
+			ePartList[0].append(p)
 		elif corner == [1, 2]:
-			oPartList[5].append(p)
+			ePartList[5].append(p)
 		elif corner == [2, 1]:
-			oPartList[2].append(p)
+			ePartList[2].append(p)
 		elif corner == [2, 2]:
-			oPartList[7].append(p)
+			ePartList[7].append(p)
 
-	return oPartList
+	return ePartList
 
 		
 
