@@ -140,7 +140,7 @@ def sNodeGet(pos, numNodes, nodeMatrix):
 	col = pos[1]
 
 	n0R = (row+1)%numNodes
-	n0C	= (row-1)%numNodes
+	n0C	= (col-1)%numNodes
 	n0 = nodeMatrix[n0R][n0C].tag
 
 	n1R = (row+1)%numNodes
