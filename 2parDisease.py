@@ -178,15 +178,14 @@ else:
 			print("{}) sent to {}".format(rank, dest))	
 		
 		#Recieves particle data from each node
-		if rank == 2:
-			for r in range(numNodes**2):
+		for r in range(numNodes**2):
 
-				extracts = comm.recv(source=(r+1), tag=1)
-				print("\n\n{}) Recieved from {}\n\n".format(rank, r+1))
-				#Takes particle from recieved extracts list and adds it to particleList
-				for i in range(len(extracts)):
-					p = extracts[i]
-					particleList.append(p)
+			extracts = comm.recv(source=(r+1), tag=1)
+			print("\n\n{}) Recieved from {}\n\n".format(rank, r+1))
+			#Takes particle from recieved extracts list and adds it to particleList
+			for i in range(len(extracts)):
+				p = extracts[i]
+				particleList.append(p)
 
 		comm.Barrier()
 		#==============================================================================
@@ -238,7 +237,7 @@ else:
 		#==============================================================================
 
 		#Sets particle state lists for graphing 
-		particleList = Node.sPList
+		Node.sPList = particleList
 		
 		for p in particleList:
 			if p.state   == 0: healP.append(p)
