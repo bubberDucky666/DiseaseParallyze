@@ -139,9 +139,8 @@ else:
 			
 		#Recieves edge partlices from other nodes 
 		for n in range(8):
-			if rank ==3:
-				nParts = comm.recv(source=sNodes[n], tag=0)
-				oPartList.append(nParts)
+			nParts = comm.recv(source=sNodes[n], tag=0)
+			oPartList.append(nParts)
 		
 		print("{}) Recieved edge bois from edge nodes".format(rank))		
 		comm.Barrier()
@@ -231,6 +230,26 @@ else:
 					particleList[i].cTime = 0
 					particleList[j].cTime = 0
 		
+
+		print("Opart length {}".format(len(oPartList)))
+		for i in range(len(ePartList)):
+			for j in range(len(ePartList[i])):
+				for k in range(len(oPartList[i])):
+					
+					ePart = ePartList[i][j]
+					oPart = oPartList[i][k]
+
+					if ePart.state == 0:
+						if oPart.state != 0 and oPart.state != 5:
+							if distance(ePart, oPart, nSide) <= radius:
+								
+								if disPass(ePart, rProb):
+									particleList[j].state = 1
+									print("I should become sick")
+								else:
+									print("no sickness transmitted")
+									pass
+
 		if count % devTime == 0:
 			for i in range(len(particleList)):
 				part = particleList[i]
@@ -265,8 +284,8 @@ else:
 		#if rank == 3 or rank == 4: # just for debugging
 		plt.title("Node {}; xB {} yB {}".format(rank, xB, yB))
 
-		plt.xlim(0, nSide)
-		plt.ylim(0, nSide)
+		plt.xlim(Node.xBound[0], Node.xBound[1])
+		plt.ylim(Node.yBound[0], Node.yBound[1])
 		
 		plt.scatter(x1, y1, c='#ADE500')
 		plt.scatter(xH, yH, c='#00E500')
