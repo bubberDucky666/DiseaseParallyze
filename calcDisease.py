@@ -15,29 +15,28 @@ def m(y, t, b, k):
 #I0 is initial infected
 #R0 is initial recovered
 
-S0   = 1000
+S0   = 5000000
 I0   = 1
-R0   = 0  
+R0   = S0*.729  
 P    = S0 + R0 + I0
 S0, I0, R0 = S0/P, I0/P, R0/P
 
-#b is number of indivduals infected per day (frac of pop)
-#k is recovery time for individual per day(frac of pop)
-b    = 1
-k    = 1/2
+#b is number of indivduals infected per day (particleS per person per day)
+#k is recovery time for individual per days (particle  per dayS)
+b    = 7/10
+k    = 1/8
 
 #t measured in days
-days = 60
+days = 365
 t    = np.array([i for i in range(days)])
 
-yi   = [S0, I0, R0]
+yi   = [S0, I0, R0] #initial values 
 args = (b, k)
 
 sols = odeint(m, yi, t, args)
 solsT = sols.T
 
 sY = solsT[0]
-print(sY)
 iY = solsT[1]
 rY = solsT[2]
 
